@@ -2,7 +2,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import CardActions from '@material-ui/core/CardActions';
+
+import '@fontsource/roboto';
 
 import {v4 as uuid} from 'uuid';
 
@@ -13,7 +19,16 @@ class Task extends React.Component {
     render() {
         return (
             <li>
-                <Button variant="contained" color="primary" onClick={this.delete.bind(this)}>{this.props.content}</Button>
+                <Card>
+                    <CardContent>
+                        <Typography>
+                            {this.props.content}
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button onClick={this.delete.bind(this)}>Delete</Button>
+                    </CardActions>
+                </Card>
             </li>
         )
     }
