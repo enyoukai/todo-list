@@ -12,6 +12,18 @@ import '@fontsource/roboto';
 
 import {v4 as uuid} from 'uuid';
 
+const ROUTE = "https://localhost:5001/api/"
+
+function toPayload(task) {
+    return {"Content": task.content, "Id": task.key};
+}
+
+function toTask(payload) {
+    var tasks = [];
+    
+    return {content: payload.content, key: payload.id};
+}
+
 class Task extends React.Component {
     delete() {
         this.props.delete(this.props.id);
@@ -25,10 +37,8 @@ class Task extends React.Component {
                             {this.props.content}
                         </Typography>
                     </CardContent>
-                    <CardActions>
-                        <Button onClick={this.delete.bind(this)}>Delete</Button>
-                    </CardActions>
                 </Card>
+                <Button onClick={this.delete.bind(this)}>Delete</Button>
             </li>
         )
     }
@@ -61,15 +71,24 @@ class App extends React.Component {
         this.state = {
             tasks: [],
         }
+
+        fetch(ROUTE + "TodoItems").then(response => response.json()).then(data => this.setState({tasks: data.map(payload => toTask(payload))}));
     }
     addTask(content) {
-        var task = [
+        var task = 
         {
             content: content,
             key: uuid()
-        }];
+        };
+
+        var payload = toPayload(task);
+ 
+        fetch(ROUTE + "TodoItems", {method: "POST", headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify(payload)})
+        .then(response => response.json())
+        .then(data => console.log(data));
+
         this.setState({
-            tasks: this.state.tasks.concat(task)
+            tasks: this.state.tasks.concat([task])
         });
         
     }
@@ -77,6 +96,7 @@ class App extends React.Component {
     deleteTask(key) {
         var tasks = this.state.tasks.filter(task => task.key !== key);
         this.setState({tasks: tasks});
+        fetch(ROUTE + "TodoItems/" + key, {method: "DELETE", headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
     }
     
     render() {
