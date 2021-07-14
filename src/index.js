@@ -15,12 +15,10 @@ import {v4 as uuid} from 'uuid';
 const ROUTE = "https://localhost:5001/api/"
 
 function toPayload(task) {
-    return {"Content": task.content, "Id": task.key};
+    return {"content": task.content, "id": task.key};
 }
 
-function toTask(payload) {
-    var tasks = [];
-    
+function toTask(payload) {    
     return {content: payload.content, key: payload.id};
 }
 
@@ -84,8 +82,6 @@ class App extends React.Component {
         var payload = toPayload(task);
  
         fetch(ROUTE + "TodoItems", {method: "POST", headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify(payload)})
-        .then(response => response.json())
-        .then(data => console.log(data));
 
         this.setState({
             tasks: this.state.tasks.concat([task])
